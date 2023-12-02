@@ -1,2 +1,3 @@
+import 'dotenv/config';
 export * from './Foo';
 export { default as Foo } from './Foo';
