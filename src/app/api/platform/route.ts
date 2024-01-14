@@ -10,12 +10,12 @@ export async function POST(req: Request) {
     try {
         const data = await req.json();
         const platform = await prisma.platform.create({
-        data: {
-            external_id: data.external_id,
-        },
-    });
+            data: {
+                external_id: data.external_id,
+            },
+        });
 
-    return NextResponse.json({ success: true });
+        return NextResponse.json({ success: true, platform });
     } catch (error) {
         if (error instanceof Error) {
             console.log(error.message);
@@ -40,6 +40,10 @@ export async function GET(req: Request, res: Response) {
         const { searchParams } = new URL(req.url);
         const id = searchParams.get('id');
 
+        if (!id) {
+            return NextResponse.json({ success: false, message: "No id given "}, { status: 400 });
+        }
+
         const platform = await prisma.platform.findUnique({
             where: {
                 id: id
@@ -51,5 +55,7 @@ export async function GET(req: Request, res: Response) {
         }
 
         return NextResponse.json({ success: true, platform });
+    } catch (error) {
+        console.log(error);
     }
 }
