@@ -22,6 +22,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/api/platform/platformRoute.test.jsx", "./jest-setup.ts", "jest.setup.js", "src/app/api/platform/findUnique"],
   "exclude": ["node_modules"]
 }
