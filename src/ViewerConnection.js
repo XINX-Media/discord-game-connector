@@ -1,13 +1,38 @@
+require('dotenv').config();
+const { Client, Events, GatewayIntentBits } = require('discord.js');
 
-class ViewerConnection {
-	constructor([commands]) {
+class ViewerConnection
+{
+	constructor([commands])
+	{
 		
 	}
 
 	connect()
 	{
-		require('dotenv').config();
-		const { Client, Events, GatewayIntentBits } = require('discord.js');
+		
+	}
+
+	handleMessage()
+	{
+
+	}
+
+	sendMessage(message)
+	{
+
+	}
+}
+
+class DiscordConnection extends ViewerConnection
+{
+	constructor([commands])
+	{
+
+	}
+
+	connect()
+	{
 		const { token } = process.env.DISCORD_TOKEN;
 
 		// Create a new client instance
@@ -22,13 +47,18 @@ class ViewerConnection {
 		client.login(token);
 	}
 
-	handleMessage()
+	sendMessage(channel, messageContent)
 	{
-
-	}
-
-	sendMessage(channelID, messageContent)
-	{
-		
+		channel.send(
+		{
+			message: "Message text",
+			files: [{
+			  attachment: 'example.file',
+			  name: 'filename',
+			  description: 'file description for accessibility'
+			}]
+		})
+			.then(console.log)
+			.catch(console.error);
 	}
 }
