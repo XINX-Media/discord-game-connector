@@ -62,7 +62,7 @@ model VerificationToken {
 
 model Platform {
   id            String    @id @default(cuid()) @unique
-  external_id   String    @unique
+  external_id   String    
 
   @@unique([id, external_id])
 }
