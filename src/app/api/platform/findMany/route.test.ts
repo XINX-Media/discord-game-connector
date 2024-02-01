@@ -1,9 +1,6 @@
 //import request from 'supertest';
 //import server from 'nextjs-http-supertest';
 
-import { enableFetchMocks } from 'jest-fetch-mock'
-enableFetchMocks();
-
 import { GET } from "./route";
 import { testClient } from "../../../../utils/test-client";
 
