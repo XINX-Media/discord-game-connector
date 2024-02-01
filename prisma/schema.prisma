@@ -68,6 +68,7 @@ model Platform {
 }
 
 model GameTable {
-  id     String    @id @default(cuid())
+  id     String    @id @default(cuid()) @unique
+  tempValue String
 }
 
