@@ -4,7 +4,6 @@ import { NextApiHandler } from "next";
 import { apiResolver } from "next/dist/server/api-utils/node/api-resolver";
 import { NextRequest, NextResponse } from 'next/server';
 
-
 export const testClient = (handler: NextApiHandler) => {
   const listener: RequestListener = (req, res) => {
     return apiResolver(
