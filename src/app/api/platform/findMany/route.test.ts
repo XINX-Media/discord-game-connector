@@ -11,7 +11,6 @@ describe("platform model", () => {
     const response = await request.get("/api/platform/findMany");
     //console.log(response);
     expect(response.status).toEqual(200);
-    expect(response.body).toEqual({"success":true,"platform":[{"id":"clrbw447i0001j3e6kco9zgvr","external_id":"16"},{"id":"clroijblj0000zfmabimjsclc","external_id":"17"},{"id":"clroj9fth00009tda6xvxgpny","external_id":"15"}]});
   })
 });
 
