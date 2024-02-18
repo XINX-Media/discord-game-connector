@@ -38,7 +38,7 @@ const MainNavbar = () => {
         </NavbarContent>
         <NavbarContent justify="end">
           <NavbarItem className="hidden lg:flex">
-            <Link href="/auth/sign-in" className="text-default-500">
+            <Link href="/login" className="text-default-500">
               Login
             </Link>
           </NavbarItem>
