@@ -132,7 +132,6 @@ export const authOptionsWrapper = (
             password: { label: "Password", type: "password" },
           },
           authorize: async (credentials) => {
-            console.log("Running authorize");
             try {
               const result = await loginSchema.safeParseAsync(credentials);
 
@@ -170,8 +169,6 @@ export const authOptionsWrapper = (
                 throw new Error("Password is not correct");
               }
 
-              console.log("User Found");
-
               return user as any;
             } catch (error) {
               if (
@@ -190,7 +187,6 @@ export const authOptionsWrapper = (
       ],
     },
   ];
-  // Configure one or more authentication providers
 };
 
 export async function auth(

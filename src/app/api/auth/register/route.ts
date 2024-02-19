@@ -15,8 +15,7 @@ export async function POST(request: Request) {
       });
     }
 
-    const { email, password, firstName, lastName, confirmPassword } =
-      result.data;
+    const { email, password, firstName, lastName } = result.data;
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -27,9 +26,12 @@ export async function POST(request: Request) {
     });
 
     if (user) {
-      return NextResponse.json({
-        error: "User already exist with this email",
-      });
+      return NextResponse.json(
+        {
+          error: "Email already registered",
+        },
+        { status: 400 }
+      );
     }
 
     const newUser = await db.user.create({

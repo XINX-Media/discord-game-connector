@@ -113,11 +113,6 @@ const SignIn = () => {
               )}
 
               <div className="flex justify-between w-full mt-4">
-                {/* <Link href="/sign-up">
-                  <span className="text-secondary underline">
-                    Forgot Password?
-                  </span>
-                </Link> */}
                 <Link href="/auth/sign-up">
                   <span className="text-warning underline">
                     Create an Account

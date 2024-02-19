@@ -15,6 +15,7 @@ import confetti from "canvas-confetti";
 import { Dispatch, SetStateAction, useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { Eye, EyeOff } from "lucide-react";
 
 interface UserDataProps {
   firstName: string;
@@ -73,9 +74,16 @@ interface SignUpFormProps {
     confirmPassword: string;
   };
   setUserData: Dispatch<SetStateAction<UserDataProps>>;
+  errors: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+  };
 }
 
-const SignUpForm = ({ userData, setUserData }: SignUpFormProps) => {
+const SignUpForm = ({ userData, setUserData, errors }: SignUpFormProps) => {
   const handleForm = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserData((prev) => {
       return {
@@ -83,6 +91,12 @@ const SignUpForm = ({ userData, setUserData }: SignUpFormProps) => {
         [e.target.name]: e.target.value,
       };
     });
+  };
+
+  const [passwordVisible, setPasswordVisible] = useState(false);
+
+  const togglePasswordVisible = () => {
+    setPasswordVisible(!passwordVisible);
   };
   return (
     <>
@@ -97,6 +111,7 @@ const SignUpForm = ({ userData, setUserData }: SignUpFormProps) => {
             size="lg"
             value={userData.firstName}
             onChange={handleForm}
+            errorMessage={errors.firstName}
           />
           <Input
             name="lastName"
@@ -106,6 +121,7 @@ const SignUpForm = ({ userData, setUserData }: SignUpFormProps) => {
             size="lg"
             value={userData.lastName}
             onChange={handleForm}
+            errorMessage={errors.lastName}
           />
         </div>
         <Input
@@ -116,24 +132,47 @@ const SignUpForm = ({ userData, setUserData }: SignUpFormProps) => {
           size="lg"
           value={userData.email}
           onChange={handleForm}
+          errorMessage={errors.email}
         />
         <Input
           name="password"
-          type="password"
+          type={passwordVisible ? "text" : "password"}
           label="Password"
           isRequired
           size="lg"
           value={userData.password}
           onChange={handleForm}
+          errorMessage={errors.password}
+          endContent={
+            passwordVisible ? (
+              <EyeOff
+                onClick={togglePasswordVisible}
+                className="cursor-pointer"
+              />
+            ) : (
+              <Eye onClick={togglePasswordVisible} className="cursor-pointer" />
+            )
+          }
         />
         <Input
           name="confirmPassword"
-          type="password"
+          type={passwordVisible ? "text" : "password"}
           label="Confirm Password"
           isRequired
           size="lg"
           value={userData.confirmPassword}
           onChange={handleForm}
+          errorMessage={errors.confirmPassword}
+          endContent={
+            passwordVisible ? (
+              <EyeOff
+                onClick={togglePasswordVisible}
+                className="cursor-pointer"
+              />
+            ) : (
+              <Eye onClick={togglePasswordVisible} className="cursor-pointer" />
+            )
+          }
         />
       </form>
     </>
@@ -141,7 +180,7 @@ const SignUpForm = ({ userData, setUserData }: SignUpFormProps) => {
 };
 
 const SignUp = () => {
-  const { data, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
 
   // Redirects user to home page if already logged in.
@@ -159,6 +198,24 @@ const SignUp = () => {
     confirmPassword: "",
   });
 
+  const [errors, setErrors] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const resetErrors = () => {
+    setErrors({
+      confirmPassword: "",
+      email: "",
+      firstName: "",
+      lastName: "",
+      password: "",
+    });
+  };
+
   const handleSignIn = async () => {
     setSignInLoading((prev) => true);
     await signIn("credentials", {
@@ -171,8 +228,8 @@ const SignUp = () => {
   const [signUpSuccess, setSignUpSuccess] = useState(false);
 
   const handleConfetti = () => {
-    var count = 200;
-    var defaults = {
+    const count = 200;
+    const defaults = {
       origin: { y: 0.7 },
     };
 
@@ -211,6 +268,8 @@ const SignUp = () => {
   const [signUpLoading, setSignUpLoading] = useState(false);
 
   const handleSubmit = async () => {
+    resetErrors();
+
     if (
       !(
         userData.confirmPassword &&
@@ -220,6 +279,16 @@ const SignUp = () => {
         userData.password
       )
     ) {
+      return;
+    }
+
+    if (userData.password !== userData.confirmPassword) {
+      setErrors((prev) => {
+        return {
+          ...prev,
+          confirmPassword: "Passwords do not match",
+        };
+      });
       return;
     }
 
@@ -244,6 +313,14 @@ const SignUp = () => {
         await handleSignIn();
       }, 2000);
     } else {
+      if (status.error === "Email already registered") {
+        setErrors((prev) => {
+          return {
+            ...prev,
+            email: "Email already registered.",
+          };
+        });
+      }
     }
   };
 
@@ -258,7 +335,11 @@ const SignUp = () => {
             {/* <CardHeader className="text-2xl">Sign Up</CardHeader> */}
             <CardBody className="flex flex-col gap-4">
               {!signUpSuccess ? (
-                <SignUpForm userData={userData} setUserData={setUserData} />
+                <SignUpForm
+                  userData={userData}
+                  setUserData={setUserData}
+                  errors={errors}
+                />
               ) : (
                 <VerificationEmail userData={userData} />
               )}
