@@ -1,3 +1,5 @@
+"use server";
+
 import { NextApiRequest, NextApiResponse } from 'next'
 import { signIn } from "../../../../auth";
  
@@ -12,6 +14,7 @@ export default async function handler(
     res.status(200).json({ success: true })
   } catch (error) {
     if (error) {
+      console.log(error);
       res.status(401).json({ error: 'Invalid credentials.' })
     } else {
       res.status(500).json({ error: 'Something went wrong.' })
