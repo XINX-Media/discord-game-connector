@@ -1,19 +1,11 @@
+import { isNodeEnv } from "@/utils/enviornmentHelpers";
 import { PrismaClient } from "@prisma/client";
-// import "server-only";
 
 declare global {
-  // eslint-disable-next-line no-var, no-unused-vars
-  var cachedPrisma: PrismaClient;
+  var prisma: PrismaClient | undefined;
 }
 
-let prisma: PrismaClient;
-if (process.env.NODE_ENV === "production") {
-  prisma = new PrismaClient();
-} else {
-  if (!global.cachedPrisma) {
-    global.cachedPrisma = new PrismaClient();
-  }
-  prisma = global.cachedPrisma;
-}
+const prisma = global.prisma || new PrismaClient({ log: ["info"] });
+if (!isNodeEnv("production")) global.prisma = prisma;
 
 export const db = prisma;

@@ -11,8 +11,11 @@ import {
   Button,
   Link,
 } from "@nextui-org/react";
+import { signOut, useSession } from "next-auth/react";
 
 const MainNavbar = () => {
+  const session = useSession();
+
   return (
     <>
       <Navbar isBlurred isBordered maxWidth="full" position="static">
@@ -37,21 +40,38 @@ const MainNavbar = () => {
           </NavbarItem>
         </NavbarContent>
         <NavbarContent justify="end">
-          <NavbarItem className="hidden lg:flex">
-            <Link href="/auth/sign-in" className="text-default-500">
-              Login
-            </Link>
-          </NavbarItem>
-          <NavbarItem>
-            <Button
-              as={Link}
-              color="success"
-              href="/auth/sign-up"
-              variant="flat"
-            >
-              Sign Up
-            </Button>
-          </NavbarItem>
+          {session.status !== "authenticated" ? (
+            <>
+              <NavbarItem className="hidden lg:flex">
+                <Link href="/auth/sign-in" className="text-default-500">
+                  Login
+                </Link>
+              </NavbarItem>
+              <NavbarItem>
+                <Button
+                  as={Link}
+                  color="success"
+                  href="/auth/sign-up"
+                  variant="flat"
+                >
+                  Sign Up
+                </Button>
+              </NavbarItem>
+            </>
+          ) : (
+            <NavbarItem>
+              <Button
+                as={Link}
+                color="danger"
+                variant="flat"
+                onClick={() => {
+                  signOut();
+                }}
+              >
+                Log out
+              </Button>
+            </NavbarItem>
+          )}
         </NavbarContent>
       </Navbar>
     </>

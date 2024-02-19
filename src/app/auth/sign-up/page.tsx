@@ -21,6 +21,7 @@ interface UserDataProps {
   lastName: string;
   email: string;
   password: string;
+  confirmPassword: string;
 }
 
 interface VerificationEmailProps {
@@ -69,6 +70,7 @@ interface SignUpFormProps {
     lastName: string;
     email: string;
     password: string;
+    confirmPassword: string;
   };
   setUserData: Dispatch<SetStateAction<UserDataProps>>;
 }
@@ -124,6 +126,15 @@ const SignUpForm = ({ userData, setUserData }: SignUpFormProps) => {
           value={userData.password}
           onChange={handleForm}
         />
+        <Input
+          name="confirmPassword"
+          type="password"
+          label="Confirm Password"
+          isRequired
+          size="lg"
+          value={userData.confirmPassword}
+          onChange={handleForm}
+        />
       </form>
     </>
   );
@@ -145,13 +156,14 @@ const SignUp = () => {
     lastName: "",
     email: "",
     password: "",
+    confirmPassword: "",
   });
 
   const handleSignIn = async () => {
     setSignInLoading((prev) => true);
-    await signIn("email", {
+    await signIn("credentials", {
       email: userData.email,
-      redirect: false,
+      password: userData.password,
     });
     setSignInLoading((prev) => false);
   };
@@ -200,17 +212,20 @@ const SignUp = () => {
 
   const handleSubmit = async () => {
     if (
-      !userData.email ||
-      !userData.password ||
-      !userData.firstName ||
-      !userData.lastName
+      !(
+        userData.confirmPassword &&
+        userData.email &&
+        userData.firstName &&
+        userData.lastName &&
+        userData.password
+      )
     ) {
       return;
     }
 
     setSignUpLoading((prev) => true);
 
-    const response = await fetch("/api/user", {
+    const response = await fetch("/api/auth/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -222,10 +237,12 @@ const SignUp = () => {
 
     const status = await response.json();
 
-    if (status.success) {
+    if (response.ok) {
       handleConfetti();
       setSignUpSuccess(true);
-      //   await handleSignIn();
+      setTimeout(async () => {
+        await handleSignIn();
+      }, 2000);
     } else {
     }
   };

@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  output = "../node_modules/.prisma/client"
 }
 
 datasource db {
@@ -18,7 +19,7 @@ model User {
   email     String    @unique
   username  String?
   password  String
-  Account   Account[]
+  accounts   Account[]
   Session   Session[]
 }
 
